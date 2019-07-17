@@ -1,3 +1,5 @@
+from models import cnn
+
 def accuracy(y_test, y_preds, diff):
     # y_true = y_test.tolist()
     un_normalized_pred = [i * 100 for i in y_preds]
@@ -24,8 +26,12 @@ def predict(model, x_test):
     return preds
 
 
-def predictions(model, x_test, y_test):
+def predictions(model, x_test, y_test, is_cnn = False):
+    if is_cnn:
+        x_test = cnn.cnn_pre_process(x_test)
+
     preds = predict(model, x_test)
     accuracy(y_test, preds, 5)
     accuracy(y_test, preds, 10)
     accuracy(y_test, preds, 15)
+    return preds

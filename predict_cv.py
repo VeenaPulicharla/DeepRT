@@ -40,19 +40,14 @@ def main():
     train_sequences = pre_process(trainset['peptide_seq'])
     test_sequences = pre_process(testset['peptide_seq'])
 
-    pool = ThreadPool(processes=1)
-    try:
-        # CNN
-        cnn_model = Thread(cnn(train_sequences, trainset['CV'])).start()
-        # RNN
-        rnn_model = Thread(rnn(train_sequences, trainset['CV'])).start()
+    # CNN Model
+    cnn_model = cnn(train_sequences, trainset['CV'])
+    # RNN Model
+    rnn_model = rnn(train_sequences, trainset['CV'])
 
-    except:
-        print("Error: unable to start thread")
-
-    # Test
+    # get predictions
     print("...............................CNN Results...................................")
-    predictions(cnn_model, test_sequences, testset['CV'])
+    predictions(cnn_model, test_sequences, testset['CV'], is_cnn=True)
 
     print("...............................RNN Results...................................")
     predictions(rnn_model, test_sequences, testset['CV'])
