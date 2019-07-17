@@ -2,6 +2,8 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, LeakyReLU
 from keras.layers import Conv2D, GlobalAveragePooling2D, MaxPooling2D
 from keras.optimizers import Adam
+from utils.predictions import predictions
+import tensorflow as tf
 
 from keras.callbacks import EarlyStopping
 early_stopping_monitor = EarlyStopping(monitor='mean_absolute_error',
@@ -33,17 +35,24 @@ def build_model(input_shape):
     return model
 
 
-def cnn(x_train, x_test):
+def cnn(x_train, y_train):
     x_train = cnn_pre_process(x_train)
+    # x_test = cnn_pre_process(x_test)
     input_shape = (x_train.shape[1], x_train.shape[2], 1)
     # Train
     model = build_model(input_shape)
     print("......................CNN Training Started.........................")
     model.fit(x_train,
-              x_test.values,
+              y_train.values,
               batch_size=10,
-              epochs=2,
+              epochs=1,
               callbacks=[early_stopping_monitor],
               verbose=1,
               validation_split=0.1)
+    print("CNN Training Finished")
+    # Test
+    # print("...............................Runnig CNN Predictions...................................")
+    # preds = predictions(model, x_test, y_test)
+    # print("...............................CNN Predictions Finished......................................")
+    # return preds
     return model
