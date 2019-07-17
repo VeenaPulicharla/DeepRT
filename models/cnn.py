@@ -35,7 +35,7 @@ def build_model(input_shape):
     return model
 
 
-def cnn(x_train, y_train):
+def cnn(x_train, y_train, model_return_dict):
     x_train = cnn_pre_process(x_train)
     # x_test = cnn_pre_process(x_test)
     input_shape = (x_train.shape[1], x_train.shape[2], 1)
@@ -47,7 +47,7 @@ def cnn(x_train, y_train):
               batch_size=10,
               epochs=1,
               callbacks=[early_stopping_monitor],
-              verbose=1,
+              verbose=2,
               validation_split=0.1)
     print("CNN Training Finished")
     # Test
@@ -55,4 +55,5 @@ def cnn(x_train, y_train):
     # preds = predictions(model, x_test, y_test)
     # print("...............................CNN Predictions Finished......................................")
     # return preds
-    return model
+    #return model
+    model_return_dict['cnn'] = model

@@ -24,7 +24,7 @@ def build_model(input_shape):
     return rnn_model
 
 
-def rnn(x_train, y_train):
+def rnn(x_train, y_train, model_return_dict):
     input_shape = (x_train.shape[1], x_train.shape[2])
     rnn_model = build_model(input_shape)
     print(".......................RNN Training started............................")
@@ -40,4 +40,5 @@ def rnn(x_train, y_train):
     # preds = predictions(rnn_model, x_test, y_test)
     # print("...............................RNN  Predictions Finished......................................")
     # return preds
-    return rnn_model
+    #return rnn_model
+    model_return_dict['rnn'] = rnn_model

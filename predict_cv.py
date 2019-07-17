@@ -5,7 +5,7 @@ from models.cnn import cnn
 from utils.predictions import predictions
 from models.rnn import rnn
 from threading import Thread
-from multiprocessing.pool import ThreadPool
+import multiprocessing
 import time
 
 
@@ -40,10 +40,29 @@ def main():
     train_sequences = pre_process(trainset['peptide_seq'])
     test_sequences = pre_process(testset['peptide_seq'])
 
+    # Multi-processing
+    manager = multiprocessing.Manager()
+    model_return_dict = manager.dict()
+    jobs = []
+
+    p1 = multiprocessing.Process(target= cnn, args = (train_sequences, trainset['CV'], model_return_dict))
+    p1.start()
+    jobs.append(p1)
+
+    p2 = multiprocessing.Process(target= rnn, args = (train_sequences, trainset['CV'], model_return_dict))
+    p2.start()
+    jobs.append((p2))
+
+    for proc in jobs:
+        proc.join()
+
+    cnn_model = model_return_dict['cnn']
+    rnn_model = model_return_dict['rnn']
+
     # CNN Model
-    cnn_model = cnn(train_sequences, trainset['CV'])
+    # cnn_model = cnn(train_sequences, trainset['CV'])
     # RNN Model
-    rnn_model = rnn(train_sequences, trainset['CV'])
+    # rnn_model = rnn(train_sequences, trainset['CV'])
 
     # get predictions
     print("...............................CNN Results...................................")
