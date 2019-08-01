@@ -26,12 +26,13 @@ def predict(model, x_test):
     return preds
 
 
-def predictions(model, x_test, y_test, is_cnn = False):
-    if is_cnn:
-        x_test = cnn.cnn_pre_process(x_test)
-
-    preds = predict(model, x_test)
+def predict_rf(model, x_test, y_test):
+    preds = predictions(model, x_test)
     accuracy(y_test, preds, 5)
     accuracy(y_test, preds, 10)
-    accuracy(y_test, preds, 15)
+    accuracy(y_test, preds, 20)
+
+
+def predictions(model, x_test):
+    preds = predict(model, x_test)
     return preds
