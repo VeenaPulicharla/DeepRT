@@ -1,28 +1,33 @@
-import pandas as pd
+from utils.io import load_nn_model, load_sk_model, load_data
+from utils.predictions import predictions, predict_rf
+from utils.pre_processing import PreProcessing
 import argparse
-from models.pre_processing import pre_process
-from models.cnn import cnn
-from utils.predictions import predictions
-from models.rnn import rnn
-from threading import Thread
-from multiprocessing.pool import ThreadPool
-import time
+import pandas as pd
+from itertools import chain
 
 
-def load_data(train_path, test_path):
-    trainset = pd.read_csv(train_path)
-    testset = pd.read_csv(test_path)
-    return trainset, testset
-
-
-def main():
+def run_predictions():
     parser = argparse.ArgumentParser(description='Input Parameters ')
     parser.add_argument(
-        "-train_path",
-        "--train_data_path",
+        "-cnn",
+        "--cnn_model_path",
         type=str,
-        help='Location of train dataset',
-        default="/home/veena/thermofisher_cv/trainset.csv"
+        help='Location of saved cnn model',
+        default="/home/veena/thermofisher_cv/cnn_model.h5"
+    )
+    parser.add_argument(
+        "-rnn",
+        "--rnn_model_path",
+        type=str,
+        help='Location of saved rnn model',
+        default="/home/veena/thermofisher_cv/rnn_model.h5"
+    )
+    parser.add_argument(
+        "-rf",
+        "--rf_model_path",
+        type=str,
+        help='Location of saved random forest model',
+        default="/home/veena/thermofisher_cv/rf_model.pickle"
     )
     parser.add_argument(
         "-test_path",
@@ -33,25 +38,32 @@ def main():
     )
 
     args = parser.parse_args()
-    train_path = args.train_data_path
-    test_path = args.test_data_path
+    cnn_filename = args.cnn_model_path
+    rnn_filename = args.rnn_model_path
+    rf_filename = args.rf_model_path
+    data_path = args.test_data_path
 
-    trainset, testset = load_data(train_path, test_path)
-    train_sequences = pre_process(trainset['peptide_seq'])
-    test_sequences = pre_process(testset['peptide_seq'])
+    # load models
+    cnn_model = load_nn_model(cnn_filename)
+    rnn_model = load_nn_model(rnn_filename)
+    rf_model = load_sk_model(rf_filename)
 
-    # CNN Model
-    cnn_model = cnn(train_sequences, trainset['CV'])
-    # RNN Model
-    rnn_model = rnn(train_sequences, trainset['CV'])
+
+    preprocess_obj = PreProcessing()
+    testset = load_data(data_path)
+    test_sequences = preprocess_obj.pre_process(testset['peptide_seq'])
+    cnn_x_test = preprocess_obj.cnn_pre_process(test_sequences)
 
     # get predictions
-    print("...............................CNN Results...................................")
-    predictions(cnn_model, test_sequences, testset['CV'], is_cnn=True)
+    cnn_preds = predictions(cnn_model, cnn_x_test)
+    rnn_preds = predictions(rnn_model, test_sequences)
 
-    print("...............................RNN Results...................................")
-    predictions(rnn_model, test_sequences, testset['CV'])
+    features_df = pd.DataFrame({'cnn_preds': list(chain.from_iterable(cnn_preds)),
+                                'rnn_preds': list(chain.from_iterable(rnn_preds))})
+
+    print("................................ Results ...................................")
+    predict_rf(rf_model, testset['CS'].values.reshape(-1,1), testset['CV'])
 
 
 if __name__ == '__main__':
-    main()
+    run_predictions()
