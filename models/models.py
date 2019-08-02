@@ -54,8 +54,8 @@ class Models(object):
         print("......................CNN Training Started.........................")
         model.fit(x_train,
                   y_train.values,
-                  batch_size= 50,
-                  epochs=100,
+                  batch_size= 30,
+                  epochs=500,
                   callbacks=[self.early_stopping_monitor],
                   verbose=2,
                   validation_split=0.1)
@@ -74,8 +74,8 @@ class Models(object):
               ".....................")
         rnn_model.fit(x_train,
                       y_train,
-                      batch_size=50,
-                      epochs=100,
+                      batch_size=30,
+                      epochs=500,
                       verbose=2,
                       callbacks=[self.early_stopping_monitor],
                       validation_split=0.1)
