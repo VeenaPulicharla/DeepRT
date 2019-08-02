@@ -15,28 +15,28 @@ def main():
         "--train_data_path",
         type=str,
         help='Location of train dataset',
-        default="/home/veena/thermofisher_cv/trainset.csv"
+        default="/mnt/repository/datasets/deep-rt/trainset.csv"
     )
     parser.add_argument(
         "-cnn",
         "--cnn_model_path",
         type=str,
         help='Location to save cnn model',
-        default="/home/veena/thermofisher_cv/cnn_model.h5"
+        default="/mnt/repository/datasets/deep-rt/cnn_model.h5"
     )
     parser.add_argument(
         "-rnn",
         "--rnn_model_path",
         type=str,
         help='Location to save rnn model',
-        default="/home/veena/thermofisher_cv/rnn_model.h5"
+        default="/mnt/repository/datasets/deep-rt/rnn_model.h5"
     )
     parser.add_argument(
         "-rf",
         "--rf_model_path",
         type=str,
         help='Location to save random forest model',
-        default="/home/veena/thermofisher_cv/rf_model.pickle"
+        default="/mnt/repository/datasets/deep-rt/rf_model.pickle"
     )
 
     args = parser.parse_args()

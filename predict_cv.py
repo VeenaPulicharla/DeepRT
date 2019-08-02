@@ -13,28 +13,28 @@ def run_predictions():
         "--cnn_model_path",
         type=str,
         help='Location of saved cnn model',
-        default="/home/veena/thermofisher_cv/cnn_model.h5"
+        default="/mnt/repository/datasets/deep-rt/cnn_model.h5"
     )
     parser.add_argument(
         "-rnn",
         "--rnn_model_path",
         type=str,
         help='Location of saved rnn model',
-        default="/home/veena/thermofisher_cv/rnn_model.h5"
+        default="/mnt/repository/datasets/deep-rt/rnn_model.h5"
     )
     parser.add_argument(
         "-rf",
         "--rf_model_path",
         type=str,
         help='Location of saved random forest model',
-        default="/home/veena/thermofisher_cv/rf_model.pickle"
+        default="/mnt/repository/datasets/deep-rt/rf_model.pickle"
     )
     parser.add_argument(
         "-test_path",
         "--test_data_path",
         type=str,
         help='Location of test dataset',
-        default="/home/veena/thermofisher_cv/testset.csv"
+        default="/mnt/repository/datasets/deep-rt/testset.csv"
     )
 
     args = parser.parse_args()
